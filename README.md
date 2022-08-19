@@ -1,6 +1,6 @@
 # Multi-Event-Camera Depth Estimation and Outlier Rejection by Refocused Events Fusion
 
-[![Multi-Event-Camera Depth Estimation and Outlier Rejection by Refocused Events Fusion](https://img.youtube.com/vi/Ewhkcsu7S4E/maxresdefault.jpg)](https://youtu.be/Ewhkcsu7S4E)
+[![Multi-Event-Camera Depth Estimation and Outlier Rejection by Refocused Events Fusion](<!--https://img.youtube.com/vi/Ewhkcsu7S4E/maxresdefault.jpg-->)(Screenshot%20from%202022-08-19%2019-01-37.png)](https://youtu.be/Ewhkcsu7S4E)
 
 This is the repository for [**Multi-Event-Camera Depth Estimation and Outlier Rejection by Refocused Events Fusion**](https://doi.org/10.48550/arXiv.2207.10494) by  
 [Suman Ghosh](https://www.linkedin.com/in/suman-ghosh-a8762576/) and [Guillermo Callego](https://sites.google.com/view/guillermogallego).
