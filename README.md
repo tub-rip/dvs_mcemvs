@@ -15,13 +15,11 @@ If you use this work in your research, please cite it as follows:
 
 ```bibtex
 @misc{Ghosh22,
-  doi = {10.48550/ARXIV.2207.10494},  
-  url = {https://arxiv.org/abs/2207.10494},  
   author = {Ghosh, Suman and Gallego, Guillermo},  
   title = {Multi-Event-Camera Depth Estimation and Outlier Rejection by Refocused Events Fusion},
   publisher = {arXiv},
   year = {2022},
-  copyright = {arXiv.org perpetual, non-exclusive license}
+  doi = {10.48550/ARXIV.2207.10494}
 }
 ```
 
