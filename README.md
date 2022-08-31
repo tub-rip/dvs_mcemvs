@@ -13,7 +13,7 @@ This is the repository for [**Multi-Event-Camera Depth Estimation and Outlier Re
  We plan to release the **code** soon.  
 If you use this work in your research, please cite it as follows:
 
-```bibtex
+<!--```bibtex
 @misc{Ghosh22,
   author = {Ghosh, Suman and Gallego, Guillermo},  
   title = {Multi-Event-Camera Depth Estimation and Outlier Rejection by Refocused Events Fusion},
@@ -21,7 +21,14 @@ If you use this work in your research, please cite it as follows:
   year = {2022},
   doi = {10.48550/ARXIV.2207.10494}
 }
-```
+```-->
+@article{Ghosh22aisy,
+  author = {Ghosh, Suman and Gallego, Guillermo},  
+  title = {Multi-Event-Camera Depth Estimation and Outlier Rejection by Refocused Events Fusion},
+  journal = {Advanced Intelligent Systems},
+  year = {2022},
+  doi = {10.1002/aisy.202200221}
+}
 
 ## LICENSE
 
