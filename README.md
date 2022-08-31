@@ -2,8 +2,7 @@
 
 [![Multi-Event-Camera Depth Estimation and Outlier Rejection by Refocused Events Fusion](mcemvs_thumbnail.jpg)](https://youtu.be/o7Bxg9XlHmg)
 
-This is the repository for [**Multi-Event-Camera Depth Estimation and Outlier Rejection by Refocused Events Fusion**](https://doi.org/10.48550/arXiv.2207.10494) by  
-[Suman Ghosh](https://www.linkedin.com/in/suman-ghosh-a8762576/) and [Guillermo Gallego](https://sites.google.com/view/guillermogallego). 
+This is the repository for [**Multi-Event-Camera Depth Estimation and Outlier Rejection by Refocused Events Fusion**](https://doi.org/10.48550/arXiv.2207.10494) by [Suman Ghosh](https://www.linkedin.com/in/suman-ghosh-a8762576/) and [Guillermo Gallego](https://sites.google.com/view/guillermogallego). 
 
 This work has been accepted for publication at [Advanced Intelligent Systems](https://onlinelibrary.wiley.com/journal/26404567).
 
