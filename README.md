@@ -22,13 +22,14 @@ If you use this work in your research, please cite it as follows:
   doi = {10.48550/ARXIV.2207.10494}
 }
 ```-->
-@article{Ghosh22aisy,
+```@article{Ghosh22aisy,
   author = {Ghosh, Suman and Gallego, Guillermo},  
   title = {Multi-Event-Camera Depth Estimation and Outlier Rejection by Refocused Events Fusion},
   journal = {Advanced Intelligent Systems},
   year = {2022},
   doi = {10.1002/aisy.202200221}
 }
+```
 
 ## LICENSE
 
