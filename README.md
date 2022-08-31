@@ -1,29 +1,19 @@
 # Multi-Event-Camera Depth Estimation and Outlier Rejection by Refocused Events Fusion
 
-[![Multi-Event-Camera Depth Estimation and Outlier Rejection by Refocused Events Fusion](mcemvs_thumbnail.png)](https://youtu.be/Ewhkcsu7S4E)
-<!--Youtube preview image: https://img.youtube.com/vi/Ewhkcsu7S4E/maxresdefault.jpg-->
+[![Multi-Event-Camera Depth Estimation and Outlier Rejection by Refocused Events Fusion](mcemvs_thumbnail.jpg)](https://youtu.be/o7Bxg9XlHmg)
 
 This is the repository for [**Multi-Event-Camera Depth Estimation and Outlier Rejection by Refocused Events Fusion**](https://doi.org/10.48550/arXiv.2207.10494) by  
 [Suman Ghosh](https://www.linkedin.com/in/suman-ghosh-a8762576/) and [Guillermo Gallego](https://sites.google.com/view/guillermogallego). 
 
-This work has been accepted for publication in [Advanced Intelligent Systems](https://onlinelibrary.wiley.com/journal/26404567).
+This work has been accepted for publication at [Advanced Intelligent Systems](https://onlinelibrary.wiley.com/journal/26404567).
 
  <!-- - [Paper]() -->
- - [Video](https://youtu.be/Ewhkcsu7S4E)
+ - [Video](https://youtu.be/o7Bxg9XlHmg)
  - [PDF](https://doi.org/10.48550/arXiv.2207.10494)
  
- We plan to release the **code** soon.  
+We plan to release the **code** soon.  
 If you use this work in your research, please cite it as follows:
 
-<!--```bibtex
-@misc{Ghosh22,
-  author = {Ghosh, Suman and Gallego, Guillermo},  
-  title = {Multi-Event-Camera Depth Estimation and Outlier Rejection by Refocused Events Fusion},
-  publisher = {arXiv},
-  year = {2022},
-  doi = {10.48550/ARXIV.2207.10494}
-}
-```-->
 ```bibtex
 @article{Ghosh22aisy,
   author = {Ghosh, Suman and Gallego, Guillermo},  
