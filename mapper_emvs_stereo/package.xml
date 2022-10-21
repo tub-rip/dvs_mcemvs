@@ -2,8 +2,9 @@
 <package format="2">
   <name>mapper_emvs_stereo</name>
   <version>0.0.0</version>
-  <description>Stereo EMVS (Event-based Multi-View Stereo)</description>
+  <description>MCEMVS (Multi-Camera Event-based Multi-View Stereo)</description>
   <maintainer email="guillermo.gallego@tu-berlin.de">Guillermo Gallego</maintainer>
+  <maintainer email="suman.ghosh@campus.tu-berlin.de">Guillermo Gallego</maintainer>
 
   <license>see LICENSE</license>
 
