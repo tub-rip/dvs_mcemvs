@@ -35,7 +35,7 @@ void parse_rosbag(const std::string &rosbag,
                   const std::string& pose_topic,
                   const double tmin,
                   const double tmax,
-                  const double offset);
+                  const double events_offset);
 
 // MVSEC has separated files for data and ground truth
 void parse_rosbag(const std::string &rosbag,
@@ -44,7 +44,8 @@ void parse_rosbag(const std::string &rosbag,
                   const std::string& event_topic,
                   const std::string& camera_info_topic,
                   const double tmin,
-                  const double tmax);
+                  const double tmax,
+                  const double events_offset);
 
 void parse_rosbag_gt(const std::string &rosbag,
                   std::map<ros::Time, geometry_utils::Transformation>& poses_,

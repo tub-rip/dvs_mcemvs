@@ -47,7 +47,7 @@ If you use this work in your research, please cite it as follows:
 
 ## LICENSE
 
-TBD.
+The license is available [here](Software_License_Agreement_TUB_dvs_mcemvs.pdf).
 
 Additional Resources on Event-based Vision
 -------

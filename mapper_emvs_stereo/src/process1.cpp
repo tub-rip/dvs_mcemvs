@@ -56,7 +56,7 @@ void process_1(
     geometry_utils::Transformation T_rv_w;
     t_mid = ts;
     LOG(INFO) << "Setting DSI reference at timestamp: " << t_mid;
-    //      }
+
     geometry_utils::Transformation T_w_rv, T_w_l, T_w_r;
     trajectory0.getPoseAt(ros::Time(t_mid), T_w_l);
     trajectory1.getPoseAt(ros::Time(t_mid), T_w_r);

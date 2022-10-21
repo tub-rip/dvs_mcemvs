@@ -103,302 +103,329 @@ DEFINE_double(max_confidence, 0, "Manually set this number as the upper limit of
  */
 int main(int argc, char** argv)
 {
-  std::chrono::high_resolution_clock::time_point t_start = std::chrono::high_resolution_clock::now();
+    google::InitGoogleLogging(argv[0]);
+    google::ParseCommandLineFlags(&argc, &argv, true);
+    google::InstallFailureSignalHandler();
+    FLAGS_alsologtostderr = true;
+    FLAGS_colorlogtostderr = true;
 
-  google::InitGoogleLogging(argv[0]);
-  google::ParseCommandLineFlags(&argc, &argv, true);
-  google::InstallFailureSignalHandler();
-  FLAGS_alsologtostderr = true;
-  FLAGS_colorlogtostderr = true;
+    sensor_msgs::CameraInfo camera_info_msg0, camera_info_msg1, camera_info_msg2;  // left and right
+    // Create camera objects
+    image_geometry::PinholeCameraModel cam0, cam1, cam2;
 
-  sensor_msgs::CameraInfo camera_info_msg0, camera_info_msg1, camera_info_msg2;  // left and right
-  // Create camera objects
-  image_geometry::PinholeCameraModel cam0, cam1, cam2;
-
-  // Load calibration from file (not from ROS bag)
-  Eigen::Matrix4d mat4_1_0, mat4_2_0, mat4_hand_eye;
-  if (FLAGS_calib_type == "eccv18")
-    get_camera_calib_ECCV18(cam0, cam1, mat4_1_0, mat4_hand_eye);
-  else if(FLAGS_calib_type == "esim")
-    get_camera_calib_ESIM(cam0, cam1, mat4_1_0, mat4_hand_eye);
-  else if(FLAGS_calib_type == "dvsgen3")
-    get_camera_calib_DVS_Gen3(cam0, cam1, mat4_1_0, mat4_hand_eye);
-  else if(FLAGS_calib_type == "yaml")
-    get_camera_calib_yaml(cam0, cam1, mat4_1_0, mat4_hand_eye, FLAGS_calib_path);
-  else if(FLAGS_calib_type == "yaml_mvsec")
-    get_camera_calib_yaml_mvsec(cam0, cam1, mat4_1_0, mat4_hand_eye, FLAGS_calib_path);
-  else if(FLAGS_calib_type == "slider")
-    get_camera_calib_slider(cam0, cam1, mat4_1_0, mat4_hand_eye, FLAGS_calib_path);
-  else if(FLAGS_calib_type == "hkust")
-    get_camera_calib_hkust(cam0, cam1, mat4_1_0, mat4_hand_eye, FLAGS_calib_path);
-  else if(FLAGS_calib_type == "evimo2")
-    get_camera_calib_evimo2(cam0, cam1, cam2, mat4_1_0, mat4_2_0, mat4_hand_eye, FLAGS_calib_path);
-  else if(FLAGS_calib_type == "json")
-    get_camera_calib_json(cam0, cam1, mat4_1_0, mat4_hand_eye, FLAGS_calib_path, FLAGS_mocap_calib_path);
-  else if(FLAGS_calib_type == "dsec_yaml")
-    get_camera_calib_dsec_yaml(cam0, cam1, mat4_1_0, mat4_hand_eye, FLAGS_calib_path, FLAGS_mocap_calib_path);
+    // Load calibration from file (not from ROS bag)
+    Eigen::Matrix4d mat4_1_0, mat4_2_0, mat4_hand_eye;
+    if (FLAGS_calib_type == "eccv18")
+        get_camera_calib_ECCV18(cam0, cam1, mat4_1_0, mat4_hand_eye);
+    else if(FLAGS_calib_type == "esim")
+        get_camera_calib_ESIM(cam0, cam1, mat4_1_0, mat4_hand_eye);
+    else if(FLAGS_calib_type == "dvsgen3")
+        get_camera_calib_DVS_Gen3(cam0, cam1, mat4_1_0, mat4_hand_eye);
+    else if(FLAGS_calib_type == "yaml")
+        get_camera_calib_yaml(cam0, cam1, mat4_1_0, mat4_hand_eye, FLAGS_calib_path);
+    else if(FLAGS_calib_type == "yaml_mvsec")
+        get_camera_calib_yaml_mvsec(cam0, cam1, mat4_1_0, mat4_hand_eye, FLAGS_calib_path);
+    else if(FLAGS_calib_type == "slider")
+        get_camera_calib_slider(cam0, cam1, mat4_1_0, mat4_hand_eye, FLAGS_calib_path);
+    else if(FLAGS_calib_type == "hkust")
+        get_camera_calib_hkust(cam0, cam1, mat4_1_0, mat4_hand_eye, FLAGS_calib_path);
+    else if(FLAGS_calib_type == "evimo2")
+        get_camera_calib_evimo2(cam0, cam1, cam2, mat4_1_0, mat4_2_0, mat4_hand_eye, FLAGS_calib_path);
+    else if(FLAGS_calib_type == "json")
+        get_camera_calib_json(cam0, cam1, mat4_1_0, mat4_hand_eye, FLAGS_calib_path, FLAGS_mocap_calib_path);
+    else if(FLAGS_calib_type == "dsec_yaml")
+        get_camera_calib_dsec_yaml(cam0, cam1, mat4_1_0, mat4_hand_eye, FLAGS_calib_path, FLAGS_mocap_calib_path);
 
 
-  if (FLAGS_event_topic2 == "")
-    cam2 = cam1;
+    if (FLAGS_event_topic2 == "")
+        cam2 = cam1;
 
-  std::vector<dvs_msgs::Event> events0, events1, events2;
-  std::map<ros::Time, geometry_utils::Transformation> poses, poses_dummy;
-  if (FLAGS_bag_filename!=""){
-      FLAGS_bag_filename_left = FLAGS_bag_filename;
-      FLAGS_bag_filename_right = FLAGS_bag_filename;
-      FLAGS_bag_filename_pose = FLAGS_bag_filename;
+    std::vector<dvs_msgs::Event> events0, events1, events2;
+    std::map<ros::Time, geometry_utils::Transformation> poses, poses_dummy;
+    if (FLAGS_bag_filename!=""){
+        FLAGS_bag_filename_left = FLAGS_bag_filename;
+        FLAGS_bag_filename_right = FLAGS_bag_filename;
+        FLAGS_bag_filename_pose = FLAGS_bag_filename;
     }
 
-  LOG(INFO)<<"Loading left events ...";
-  data_loading::parse_rosbag(FLAGS_bag_filename_left, events0, camera_info_msg0,
-                             FLAGS_event_topic0, FLAGS_camera_info_topic0, FLAGS_start_time_s, FLAGS_stop_time_s);
-  LOG(INFO)<<"Loading right events ...";
-  data_loading::parse_rosbag(FLAGS_bag_filename_right, events1, camera_info_msg1,
-                             FLAGS_event_topic1, FLAGS_camera_info_topic1, FLAGS_start_time_s, FLAGS_stop_time_s);
-  LOG(INFO)<<"Loading poses ...";
-  data_loading::parse_rosbag_gt(FLAGS_bag_filename_pose, poses, FLAGS_pose_topic, FLAGS_start_time_s, FLAGS_stop_time_s);
+    // Initialize the DSI
+    CHECK_LE(FLAGS_dimZ, 256) << "Number of depth planes should be <= 256";
+    EMVS::ShapeDSI dsi_shape(FLAGS_dimX, FLAGS_dimY, FLAGS_dimZ,
+                             FLAGS_min_depth, FLAGS_max_depth,
+                             FLAGS_fov_deg);
 
-  if(FLAGS_event_topic2 != "")
-    data_loading::parse_rosbag(FLAGS_bag_filename, events2, poses_dummy, camera_info_msg2,
-                               FLAGS_event_topic2, FLAGS_camera_info_topic2, FLAGS_pose_topic, FLAGS_start_time_s, FLAGS_stop_time_s, FLAGS_offset2);
+    // Parameters to extract semi-dense depth map from DSI
+    EMVS::OptionsDepthMap opts_depth_map;
+    opts_depth_map.max_confidence = FLAGS_max_confidence;
+    opts_depth_map.adaptive_threshold_kernel_size_ = FLAGS_adaptive_threshold_kernel_size;
+    opts_depth_map.adaptive_threshold_c_ = FLAGS_adaptive_threshold_c;
+    opts_depth_map.median_filter_size_ = FLAGS_median_filter_size;
+    opts_depth_map.full_sequence = FLAGS_full_seq;
+    opts_depth_map.save_conf_stats = FLAGS_save_conf_stats;
+    opts_depth_map.save_mono = FLAGS_save_mono;
+    opts_depth_map.rv_pos = FLAGS_rv_pos;
 
-  // Use linear interpolation to compute the camera pose for each event
-  LinearTrajectory trajectory0 = LinearTrajectory(poses);
-  // Convert optitrack poses to left camera poses using hand-eye calibration
-  geometry_utils::Transformation T_hand_eye(mat4_hand_eye);
-  trajectory0.applyTransformationRight(T_hand_eye);
-  // Trajectory of the second camera (right camera)
-  LinearTrajectory trajectory1 = LinearTrajectory(poses);
-  trajectory1.applyTransformationRight(T_hand_eye); // so far, this is trajectory0
-  geometry_utils::Transformation T_extr(mat4_1_0);
-  trajectory1.applyTransformationRight( T_extr.inverse()); // now, it becomes trajectory1
-
-  LinearTrajectory trajectory2;
-  if (FLAGS_event_topic2 != ""){
-      trajectory2 = LinearTrajectory(poses);
-      trajectory2.applyTransformationRight(T_hand_eye); // so far, this is trajectory0
-      geometry_utils::Transformation T_extr(mat4_2_0);
-      trajectory2.applyTransformationRight( T_extr.inverse());
-    }
-
-  // Initialize the DSI
-  CHECK_LE(FLAGS_dimZ, 256) << "Number of depth planes should be <= 256";
-  EMVS::ShapeDSI dsi_shape(FLAGS_dimX, FLAGS_dimY, FLAGS_dimZ,
-                           FLAGS_min_depth, FLAGS_max_depth,
-                           FLAGS_fov_deg);
-
-  // Parameters to extract semi-dense depth map from DSI
-  EMVS::OptionsDepthMap opts_depth_map;
-  opts_depth_map.max_confidence = FLAGS_max_confidence;
-  opts_depth_map.adaptive_threshold_kernel_size_ = FLAGS_adaptive_threshold_kernel_size;
-  opts_depth_map.adaptive_threshold_c_ = FLAGS_adaptive_threshold_c;
-  opts_depth_map.median_filter_size_ = FLAGS_median_filter_size;
-  opts_depth_map.full_sequence = FLAGS_full_seq;
-  opts_depth_map.save_conf_stats = FLAGS_save_conf_stats;
-  opts_depth_map.save_mono = FLAGS_save_mono;
-  opts_depth_map.rv_pos = FLAGS_rv_pos;
-
-  if (FLAGS_full_seq)
+    if (FLAGS_full_seq)
     {
-      int id0 = 0, id1 = 0, count = 0;
-      std::vector<dvs_msgs::Event> interval_events0, interval_events1, interval_events2;
+        //      int id0 = 0, id1 = 0, count = 0;
 
-      for (double interval_start=FLAGS_start_time_s; interval_start+FLAGS_duration<=FLAGS_stop_time_s; interval_start+=FLAGS_out_skip)
+        for (double interval_start=FLAGS_start_time_s; interval_start+FLAGS_duration<=FLAGS_stop_time_s; interval_start+=FLAGS_out_skip)
         {
-          interval_events0.clear();
-          interval_events1.clear();
-          double interval_stop = interval_start + FLAGS_duration;
-          double ts;
-          if(FLAGS_forward_looking)
-            ts = interval_stop;
-          else
-            ts = (interval_start + interval_stop)/2;
 
-          LOG(INFO) << "------------------ Time interval: " << interval_start << "-" << interval_stop << " s -------------------------";
-          while(true){
-              id0++;
-              if (events0[id0].ts.toSec() <= interval_start) {
-                  continue;
-                }
-              if (events0[id0].ts.toSec() >= interval_stop){
-                  break;
-                }
-              interval_events0.push_back(events0[id0]);
-            }
-          while(true){
-              id1++;
-              if (events1[id1].ts.toSec() <= interval_start) {
-                  continue;
-                }
-              if (events1[id1].ts.toSec() >= interval_stop){
-                  break;
-                }
-              interval_events1.push_back(events1[id1]);
-            }
+            std::vector<dvs_msgs::Event> interval_events0, interval_events1, interval_events2;
+            std::map<ros::Time, geometry_utils::Transformation> interval_poses;
 
-          {
-            cv::Size full_resolution = cam0.fullResolution();
-            cv::Mat event_image0 = cv::Mat(full_resolution,CV_8UC1);
-            cv::Mat event_image1 = cv::Mat(full_resolution,CV_8UC1);
-            accumulateEvents(interval_events0,true,event_image0);
-            accumulateEvents(interval_events1,true,event_image1);
-            cv::imwrite(FLAGS_out_path + std::to_string(ts) + "events_0.png",event_image0);
-            cv::imwrite(FLAGS_out_path + std::to_string(ts) + "events_1.png",event_image1);
+            double interval_stop = interval_start + FLAGS_duration;
+            double ts;
+            if(FLAGS_forward_looking)
+                ts = interval_stop;
+            else
+                ts = (interval_start + interval_stop)/2;
+
+            LOG(INFO) << "------------------ Time interval: " << interval_start << "-" << interval_stop << " s -------------------------";
+            LOG(INFO)<<"Loading left events ...";
+            data_loading::parse_rosbag(FLAGS_bag_filename_left, interval_events0, camera_info_msg0,
+                                       FLAGS_event_topic0, FLAGS_camera_info_topic0, interval_start, interval_stop, FLAGS_offset0);
+            LOG(INFO)<<"Loading right events ...";
+            data_loading::parse_rosbag(FLAGS_bag_filename_right, interval_events1, camera_info_msg1,
+                                       FLAGS_event_topic1, FLAGS_camera_info_topic1, interval_start, interval_stop, FLAGS_offset1);
+            if(FLAGS_event_topic2 != "")
+                data_loading::parse_rosbag(FLAGS_bag_filename, interval_events2, camera_info_msg2,
+                                           FLAGS_event_topic2, FLAGS_camera_info_topic2, FLAGS_start_time_s, FLAGS_stop_time_s, FLAGS_offset2);
+            LOG(INFO)<<"Loading poses ...";
+            data_loading::parse_rosbag_gt(FLAGS_bag_filename_pose, interval_poses, FLAGS_pose_topic, FLAGS_start_time_s, FLAGS_stop_time_s);
+
+            // Use linear interpolation to compute the camera pose for each event
+            LinearTrajectory trajectory0 = LinearTrajectory(interval_poses);
+            // Convert optitrack poses to left camera poses using hand-eye calibration
+            geometry_utils::Transformation T_hand_eye(mat4_hand_eye);
+            trajectory0.applyTransformationRight(T_hand_eye);
+            // Trajectory of the second camera (right camera)
+            LinearTrajectory trajectory1 = LinearTrajectory(interval_poses);
+            trajectory1.applyTransformationRight(T_hand_eye); // so far, this is trajectory0
+            geometry_utils::Transformation T_extr(mat4_1_0);
+            trajectory1.applyTransformationRight( T_extr.inverse()); // now, it becomes trajectory1
+
+            LinearTrajectory trajectory2;
             if (FLAGS_event_topic2 != ""){
-                cv::Mat event_image2 = cv::Mat(full_resolution,CV_8UC1);
-                accumulateEvents(events2,true,event_image2);
-                cv::imwrite(FLAGS_out_path + "events_3.png",event_image2);
-              }
-          }
+                trajectory2 = LinearTrajectory(interval_poses);
+                trajectory2.applyTransformationRight(T_hand_eye); // so far, this is trajectory0
+                geometry_utils::Transformation T_extr(mat4_2_0);
+                trajectory2.applyTransformationRight( T_extr.inverse());
+            }
 
-          cv::Mat depth_map, confidence_map, semidense_mask, depth_map_dense;
-          LOG(INFO)<<"Initializing mapper fused";
-          EMVS::MapperEMVS mapper_fused(cam0, dsi_shape), mapper_fused_camera_time(cam0, dsi_shape);
-          mapper_fused.name = "fused";
+            //          interval_events0.clear();
+            //          interval_events1.clear();
+            //          while(true){
+            //              id0++;
+            //              if (events0[id0].ts.toSec() <= interval_start) {
+            //                  continue;
+            //                }
+            //              if (events0[id0].ts.toSec() >= interval_stop){
+            //                  break;
+            //                }
+            //              interval_events0.push_back(events0[id0]);
+            //            }
+            //          while(true){
+            //              id1++;
+            //              if (events1[id1].ts.toSec() <= interval_start) {
+            //                  continue;
+            //                }
+            //              if (events1[id1].ts.toSec() >= interval_stop){
+            //                  break;
+            //                }
+            //              interval_events1.push_back(events1[id1]);
+            //            }
 
-          LOG(INFO)<<"Initializing mapper 0";
-          EMVS::MapperEMVS mapper0(cam0, dsi_shape);
-          mapper0.name="0";
-          LOG(INFO)<<"Initializing mapper 1";
-          EMVS::MapperEMVS mapper1(cam1, dsi_shape);
-          mapper1.name="1";
-          LOG(INFO)<<"Initializing mapper 2";
-          EMVS::MapperEMVS mapper2(cam2, dsi_shape);
-          mapper2.name="2";
+            {
+                cv::Size full_resolution = cam0.fullResolution();
+                cv::Mat event_image0 = cv::Mat(full_resolution,CV_8UC1);
+                cv::Mat event_image1 = cv::Mat(full_resolution,CV_8UC1);
+                accumulateEvents(interval_events0,true,event_image0);
+                accumulateEvents(interval_events1,true,event_image1);
+                cv::imwrite(FLAGS_out_path + std::to_string(ts) + "events_0.png",event_image0);
+                cv::imwrite(FLAGS_out_path + std::to_string(ts) + "events_1.png",event_image1);
+                if (FLAGS_event_topic2 != ""){
+                    cv::Mat event_image2 = cv::Mat(full_resolution,CV_8UC1);
+                    accumulateEvents(events2,true,event_image2);
+                    cv::imwrite(FLAGS_out_path + "events_3.png",event_image2);
+                }
+            }
 
-          switch( FLAGS_process_method )
+            cv::Mat depth_map, confidence_map, semidense_mask, depth_map_dense;
+            LOG(INFO)<<"Initializing mapper fused";
+            EMVS::MapperEMVS mapper_fused(cam0, dsi_shape), mapper_fused_camera_time(cam0, dsi_shape);
+            mapper_fused.name = "fused";
+
+            LOG(INFO)<<"Initializing mapper 0";
+            EMVS::MapperEMVS mapper0(cam0, dsi_shape);
+            mapper0.name="0";
+            LOG(INFO)<<"Initializing mapper 1";
+            EMVS::MapperEMVS mapper1(cam1, dsi_shape);
+            mapper1.name="1";
+            LOG(INFO)<<"Initializing mapper 2";
+            EMVS::MapperEMVS mapper2(cam2, dsi_shape);
+            mapper2.name="2";
+
+            switch( FLAGS_process_method )
             {
             case 1:
-              {
+            {
                 // 1-3. Compute two DSIs (one for each camera) and fuse them
                 if (events2.size()>0)
-                  process_1(cam0,cam1,cam2, trajectory0,trajectory1,trajectory2, interval_events0, interval_events1, interval_events2, opts_depth_map,dsi_shape, mapper_fused, mapper0, mapper1, mapper2, std::string(FLAGS_out_path), ts, FLAGS_stereo_fusion);
+                    process_1(cam0,cam1,cam2, trajectory0,trajectory1,trajectory2, interval_events0, interval_events1, interval_events2, opts_depth_map,dsi_shape, mapper_fused, mapper0, mapper1, mapper2, std::string(FLAGS_out_path), ts, FLAGS_stereo_fusion);
                 else
-                  process_1(cam0,cam1,cam1, trajectory0,trajectory1,trajectory2, interval_events0, interval_events1, interval_events2, opts_depth_map,dsi_shape, mapper_fused, mapper0, mapper1, mapper2, std::string(FLAGS_out_path), ts, FLAGS_stereo_fusion);
+                    process_1(cam0,cam1,cam1, trajectory0,trajectory1,trajectory2, interval_events0, interval_events1, interval_events2, opts_depth_map,dsi_shape, mapper_fused, mapper0, mapper1, mapper2, std::string(FLAGS_out_path), ts, FLAGS_stereo_fusion);
                 break;
-              }
+            }
             case 2:
-              {
+            {
                 // 1-3. Split events into sub-intervals, compute fused DSIs per sub-interval, and fuse them into a single DSI
                 mapper_fused.name = "time_camera";
                 mapper_fused_camera_time.name = "camera_time";
                 process_2(cam0,cam1,trajectory0,trajectory1, interval_events0, interval_events1, opts_depth_map,dsi_shape,FLAGS_num_intervals, mapper_fused, mapper_fused_camera_time, FLAGS_out_path, ts, FLAGS_stereo_fusion, FLAGS_temporal_fusion);
                 break;
-              }
+            }
             case 5:
-              {
+            {
                 // Shuffle event sub-intervals before fusing
                 process_5(cam0,cam1,trajectory0,trajectory1, interval_events0, interval_events1, opts_depth_map, dsi_shape, FLAGS_num_intervals, mapper_fused, FLAGS_out_path, ts, FLAGS_stereo_fusion, FLAGS_temporal_fusion);
                 break;
-              }
+            }
             }
         }
     }
-  else {
-      {
-        cv::Size full_resolution = cam0.fullResolution();
-        cv::Mat event_image0 = cv::Mat(full_resolution,CV_8UC1);
-        cv::Mat event_image1 = cv::Mat(full_resolution,CV_8UC1);
-        accumulateEvents(events0,true,event_image0);
-        accumulateEvents(events1,true,event_image1);
-        cv::imwrite(FLAGS_out_path + "events_0.png",event_image0);
-        cv::imwrite(FLAGS_out_path + "events_1.png",event_image1);
+    else {
+        LOG(INFO)<<"Loading left events ...";
+        data_loading::parse_rosbag(FLAGS_bag_filename_left, events0, camera_info_msg0,
+                                   FLAGS_event_topic0, FLAGS_camera_info_topic0, FLAGS_start_time_s, FLAGS_stop_time_s, FLAGS_offset0);
+        LOG(INFO)<<"Loading right events ...";
+        data_loading::parse_rosbag(FLAGS_bag_filename_right, events1, camera_info_msg1,
+                                   FLAGS_event_topic1, FLAGS_camera_info_topic1, FLAGS_start_time_s, FLAGS_stop_time_s, FLAGS_offset1);
+        if(FLAGS_event_topic2 != "")
+            data_loading::parse_rosbag(FLAGS_bag_filename, events2, poses_dummy, camera_info_msg2,
+                                       FLAGS_event_topic2, FLAGS_camera_info_topic2, FLAGS_pose_topic, FLAGS_start_time_s, FLAGS_stop_time_s, FLAGS_offset2);
+        LOG(INFO)<<"Loading poses ...";
+        data_loading::parse_rosbag_gt(FLAGS_bag_filename_pose, poses, FLAGS_pose_topic, FLAGS_start_time_s, FLAGS_stop_time_s);
+
+        // Use linear interpolation to compute the camera pose for each event
+        LinearTrajectory trajectory0 = LinearTrajectory(poses);
+        // Convert optitrack poses to left camera poses using hand-eye calibration
+        geometry_utils::Transformation T_hand_eye(mat4_hand_eye);
+        trajectory0.applyTransformationRight(T_hand_eye);
+        // Trajectory of the second camera (right camera)
+        LinearTrajectory trajectory1 = LinearTrajectory(poses);
+        trajectory1.applyTransformationRight(T_hand_eye); // so far, this is trajectory0
+        geometry_utils::Transformation T_extr(mat4_1_0);
+        trajectory1.applyTransformationRight( T_extr.inverse()); // now, it becomes trajectory1
+
+        LinearTrajectory trajectory2;
         if (FLAGS_event_topic2 != ""){
-            cv::Mat event_image2 = cv::Mat(full_resolution,CV_8UC1);
-            accumulateEvents(events2,true,event_image2);
-            cv::imwrite(FLAGS_out_path + "events_3.png",event_image2);
-          }
-      }
+            trajectory2 = LinearTrajectory(poses);
+            trajectory2.applyTransformationRight(T_hand_eye); // so far, this is trajectory0
+            geometry_utils::Transformation T_extr(mat4_2_0);
+            trajectory2.applyTransformationRight( T_extr.inverse());
+        }
 
-      cv::Mat depth_map, confidence_map, semidense_mask;
+        {
+            cv::Size full_resolution = cam0.fullResolution();
+            cv::Mat event_image0 = cv::Mat(full_resolution,CV_8UC1);
+            cv::Mat event_image1 = cv::Mat(full_resolution,CV_8UC1);
+            accumulateEvents(events0,true,event_image0);
+            accumulateEvents(events1,true,event_image1);
+            cv::imwrite(FLAGS_out_path + "events_0.png",event_image0);
+            cv::imwrite(FLAGS_out_path + "events_1.png",event_image1);
+            if (FLAGS_event_topic2 != ""){
+                cv::Mat event_image2 = cv::Mat(full_resolution,CV_8UC1);
+                accumulateEvents(events2,true,event_image2);
+                cv::imwrite(FLAGS_out_path + "events_3.png",event_image2);
+            }
+        }
 
-      LOG(INFO)<<"Initializing mapper fused";
-      EMVS::MapperEMVS mapper_fused(cam0, dsi_shape), mapper_fused_camera_time(cam0, dsi_shape);
-      mapper_fused.name = "fused";
-      LOG(INFO)<<"Initializing mapper 0";
-      EMVS::MapperEMVS mapper0(cam0, dsi_shape);
-      mapper0.name="0";
-      LOG(INFO)<<"Initializing mapper 1";
-      EMVS::MapperEMVS mapper1(cam1, dsi_shape);
-      mapper1.name="1";
-      LOG(INFO)<<"Initializing mapper 2";
-      EMVS::MapperEMVS mapper2(cam2, dsi_shape);
-      mapper2.name="2";
+        cv::Mat depth_map, confidence_map, semidense_mask;
 
-      switch( FLAGS_process_method )
+        LOG(INFO)<<"Initializing mapper fused";
+        EMVS::MapperEMVS mapper_fused(cam0, dsi_shape), mapper_fused_camera_time(cam0, dsi_shape);
+        mapper_fused.name = "fused";
+        LOG(INFO)<<"Initializing mapper 0";
+        EMVS::MapperEMVS mapper0(cam0, dsi_shape);
+        mapper0.name="0";
+        LOG(INFO)<<"Initializing mapper 1";
+        EMVS::MapperEMVS mapper1(cam1, dsi_shape);
+        mapper1.name="1";
+        LOG(INFO)<<"Initializing mapper 2";
+        EMVS::MapperEMVS mapper2(cam2, dsi_shape);
+        mapper2.name="2";
+
+        switch( FLAGS_process_method )
         {
         case 1:
-          {
+        {
             // 1-3. Compute two DSIs (one for each camera) and fuse them
             if (events2.size()>0)
-              process_1(cam0,cam1,cam2, trajectory0,trajectory1,trajectory2, events0,events1,events2, opts_depth_map,dsi_shape, mapper_fused, mapper0, mapper1, mapper2, FLAGS_out_path, FLAGS_ts, FLAGS_stereo_fusion);
+                process_1(cam0,cam1,cam2, trajectory0,trajectory1,trajectory2, events0,events1,events2, opts_depth_map,dsi_shape, mapper_fused, mapper0, mapper1, mapper2, FLAGS_out_path, FLAGS_ts, FLAGS_stereo_fusion);
             else
-              process_1(cam0,cam1,cam1, trajectory0,trajectory1,trajectory2, events0,events1,events2, opts_depth_map,dsi_shape, mapper_fused, mapper0, mapper1, mapper2, FLAGS_out_path, FLAGS_ts, FLAGS_stereo_fusion);
+                process_1(cam0,cam1,cam1, trajectory0,trajectory1,trajectory2, events0,events1,events2, opts_depth_map,dsi_shape, mapper_fused, mapper0, mapper1, mapper2, FLAGS_out_path, FLAGS_ts, FLAGS_stereo_fusion);
             break;
-          }
+        }
         case 2:
-          {
+        {
             // 1-3. Split events into sub-intervals, compute fused DSIs per sub-interval, and fuse them into a single DSI
             process_2(cam0,cam1,trajectory0,trajectory1,events0,events1,opts_depth_map,dsi_shape,FLAGS_num_intervals, mapper_fused, mapper_fused_camera_time, FLAGS_out_path, FLAGS_ts, FLAGS_stereo_fusion, FLAGS_temporal_fusion);
             break;
-          }
+        }
         case 5:
-          {
+        {
             // Shuffle event sub-intervals before fusing
             process_5(cam0,cam1,trajectory0,trajectory1,events0,events1,opts_depth_map,dsi_shape,FLAGS_num_intervals, mapper_fused, FLAGS_out_path, FLAGS_ts, FLAGS_stereo_fusion, FLAGS_temporal_fusion);
             break;
-          }
+        }
         }
 
-      cv::Mat depth_map_dense;
-      mapper_fused.getDepthMapFromDSI(depth_map, confidence_map, semidense_mask, opts_depth_map, depth_map_dense);
-      //    saveDepthMaps(depth_map, confidence_map, semidense_mask, depth_map_dense, dsi_shape.min_depth_, dsi_shape.max_depth_, std::string("fused"), FLAGS_out_path + FLAGS_ts);
+        cv::Mat depth_map_dense;
+        mapper_fused.getDepthMapFromDSI(depth_map, confidence_map, semidense_mask, opts_depth_map, depth_map_dense);
+        //    saveDepthMaps(depth_map, confidence_map, semidense_mask, depth_map_dense, dsi_shape.min_depth_, dsi_shape.max_depth_, std::string("fused"), FLAGS_out_path + FLAGS_ts);
 
-      // 4. Convert semi-dense depth map to point cloud
-      EMVS::OptionsPointCloud opts_pc;
-      opts_pc.radius_search_ = FLAGS_radius_search;
-      opts_pc.min_num_neighbors_ = FLAGS_min_num_neighbors;
+        // 4. Convert semi-dense depth map to point cloud
+        EMVS::OptionsPointCloud opts_pc;
+        opts_pc.radius_search_ = FLAGS_radius_search;
+        opts_pc.min_num_neighbors_ = FLAGS_min_num_neighbors;
 
-      EMVS::PointCloud::Ptr pc (new EMVS::PointCloud);
-      mapper_fused.getPointcloud(depth_map, semidense_mask, opts_pc, pc);
+        EMVS::PointCloud::Ptr pc (new EMVS::PointCloud);
+        mapper_fused.getPointcloud(depth_map, semidense_mask, opts_pc, pc);
 
-      // Save point cloud to disk
-      pcl::io::savePCDFileASCII (FLAGS_out_path+"pointcloud.pcd", *pc);
-      LOG(INFO) << "Saved " << pc->points.size () << " data points to pointcloud.pcd";
+        // Save point cloud to disk
+        pcl::io::savePCDFileASCII (FLAGS_out_path+"pointcloud.pcd", *pc);
+        LOG(INFO) << "Saved " << pc->points.size () << " data points to pointcloud.pcd";
 
-      if (FLAGS_late_fusion){
+        if (FLAGS_late_fusion){
 
-          mapper0.getDepthMapFromDSI(depth_map, confidence_map, semidense_mask, opts_depth_map, depth_map_dense);
-          // 4. Convert semi-dense depth map to point cloud
-          //          EMVS::OptionsPointCloud opts_pc;
-          opts_pc.radius_search_ = FLAGS_radius_search;
-          opts_pc.min_num_neighbors_ = FLAGS_min_num_neighbors;
-          EMVS::PointCloud::Ptr pc0 (new EMVS::PointCloud);
-          mapper_fused.getPointcloud(depth_map, semidense_mask, opts_pc, pc0);
-          // Save point cloud to disk
-          pcl::io::savePCDFileASCII (FLAGS_out_path+"pointcloud0.pcd", *pc0);
-          LOG(INFO) << "Saved " << pc0->points.size () << " data points to pointcloud.pcd";
+            mapper0.getDepthMapFromDSI(depth_map, confidence_map, semidense_mask, opts_depth_map, depth_map_dense);
+            // 4. Convert semi-dense depth map to point cloud
+            //          EMVS::OptionsPointCloud opts_pc;
+            opts_pc.radius_search_ = FLAGS_radius_search;
+            opts_pc.min_num_neighbors_ = FLAGS_min_num_neighbors;
+            EMVS::PointCloud::Ptr pc0 (new EMVS::PointCloud);
+            mapper_fused.getPointcloud(depth_map, semidense_mask, opts_pc, pc0);
+            // Save point cloud to disk
+            pcl::io::savePCDFileASCII (FLAGS_out_path+"pointcloud0.pcd", *pc0);
+            LOG(INFO) << "Saved " << pc0->points.size () << " data points to pointcloud.pcd";
 
-          mapper1.getDepthMapFromDSI(depth_map, confidence_map, semidense_mask, opts_depth_map, depth_map_dense);
-          // 4. Convert semi-dense depth map to point cloud
-          //          EMVS::OptionsPointCloud opts_pc;
-          opts_pc.radius_search_ = FLAGS_radius_search;
-          opts_pc.min_num_neighbors_ = FLAGS_min_num_neighbors;
-          EMVS::PointCloud::Ptr pc1 (new EMVS::PointCloud);
-          mapper_fused.getPointcloud(depth_map, semidense_mask, opts_pc, pc1);
-          // Save point cloud to disk
-          pcl::io::savePCDFileASCII (FLAGS_out_path+"pointcloud1.pcd", *pc1);
-          LOG(INFO) << "Saved " << pc1->points.size () << " data points to pointcloud.pcd";
+            mapper1.getDepthMapFromDSI(depth_map, confidence_map, semidense_mask, opts_depth_map, depth_map_dense);
+            // 4. Convert semi-dense depth map to point cloud
+            //          EMVS::OptionsPointCloud opts_pc;
+            opts_pc.radius_search_ = FLAGS_radius_search;
+            opts_pc.min_num_neighbors_ = FLAGS_min_num_neighbors;
+            EMVS::PointCloud::Ptr pc1 (new EMVS::PointCloud);
+            mapper_fused.getPointcloud(depth_map, semidense_mask, opts_pc, pc1);
+            // Save point cloud to disk
+            pcl::io::savePCDFileASCII (FLAGS_out_path+"pointcloud1.pcd", *pc1);
+            LOG(INFO) << "Saved " << pc1->points.size () << " data points to pointcloud.pcd";
 
-          EMVS::PointCloud::Ptr pc_concat(new EMVS::PointCloud);
-          pcl::concatenate(*pc0, *pc1, *pc_concat);
-          pcl::io::savePCDFileASCII (FLAGS_out_path+"pointcloud_concat.pcd", *pc_concat);
-          LOG(INFO) << "Saved " << pc_concat->points.size () << " data points to pointcloud.pcd";
+            EMVS::PointCloud::Ptr pc_concat(new EMVS::PointCloud);
+            pcl::concatenate(*pc0, *pc1, *pc_concat);
+            pcl::io::savePCDFileASCII (FLAGS_out_path+"pointcloud_concat.pcd", *pc_concat);
+            LOG(INFO) << "Saved " << pc_concat->points.size () << " data points to pointcloud.pcd";
         }
     }
-
-  std::chrono::high_resolution_clock::time_point t_end = std::chrono::high_resolution_clock::now();
-  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t_end - t_start ).count();
-  std::cout << "Total time taken: "<< duration;
 }

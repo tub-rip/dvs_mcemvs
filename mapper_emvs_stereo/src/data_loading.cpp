@@ -224,7 +224,8 @@ namespace data_loading {
                     const std::string& event_topic,
                     const std::string& camera_info_topic,
                     const double tmin,
-                    const double tmax)
+                    const double tmax,
+                    const double events_offset)
   {
     std::vector<std::string> topics;
     topics.push_back(event_topic);
@@ -279,7 +280,7 @@ namespace data_loading {
                     }
 
                   dvs_msgs::Event ev_modified(msg->events[i]);
-                  ev_modified.ts = ros::Time(ev_modified.ts.toSec() - initial_timestamp.toSec());
+                  ev_modified.ts = ros::Time(ev_modified.ts.toSec() - initial_timestamp.toSec() - events_offset);
                   events_.push_back(ev_modified);
                 }
             }
