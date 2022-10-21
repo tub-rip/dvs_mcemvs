@@ -1,6 +1,6 @@
 # Multi-Event-Camera Depth Estimation and Outlier Rejection by Refocused Events Fusion
 
-[![Multi-Event-Camera Depth Estimation and Outlier Rejection by Refocused Events Fusion](mcemvs_thumbnail.jpg)](https://youtu.be/o7Bxg9XlHmg)
+[![Multi-Event-Camera Depth Estimation and Outlier Rejection by Refocused Events Fusion](docs/mcemvs_thumbnail.jpg)](https://youtu.be/o7Bxg9XlHmg)
 
 This is the repository for [**Multi-Event-Camera Depth Estimation and Outlier Rejection by Refocused Events Fusion**](https://doi.org/10.48550/arXiv.2207.10494) by [Suman Ghosh](https://www.linkedin.com/in/suman-ghosh-a8762576/) and [Guillermo Gallego](https://sites.google.com/view/guillermogallego). 
 
@@ -10,7 +10,6 @@ This work has been accepted for publication at [Advanced Intelligent Systems](ht
  - [Video](https://youtu.be/o7Bxg9XlHmg)
  - [PDF](https://doi.org/10.48550/arXiv.2207.10494)
  
-We plan to release the **code** soon.  
 If you use this work in your research, please cite it as follows:
 
 ```bibtex
@@ -23,10 +22,32 @@ If you use this work in your research, please cite it as follows:
 }
 ```
 
+## Data Processing Pipeline
+
+
+![pipeline](docs/block_all.png)
+
+### Input
+* Events from multiple cameras
+* Pose of camera rig
+* Camera calibration (instrinsic, extrinsic, hand-eye) parameters
+
+### Output
+* Depth map
+* Confidence map
+* Point cloud
+* Intermediate ray density maps / Disparity Space Images (DSI)
+
+## Code
+* [Installation instructions](docs/installation.md)
+* [Running the code with various configurations](docs/running.md)
+* [Datasets used](docs/datasets.md)
+* [Running Examples](docs/examples.md)
+
+
 ## LICENSE
 
 TBD.
-
 
 Additional Resources on Event-based Vision
 -------

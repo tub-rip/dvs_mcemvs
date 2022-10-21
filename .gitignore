@@ -1,0 +1,7 @@
+*.user
+mapper_emvs_stereo/experiments/
+mapper_emvs_stereo/*.png
+mapper_emvs_stereo/*.npy
+mapper_emvs_stereo/*.pcd
+.idea
+

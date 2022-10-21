@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>mapper_emvs_stereo</name>
+  <version>0.0.0</version>
+  <description>Stereo EMVS (Event-based Multi-View Stereo)</description>
+  <maintainer email="guillermo.gallego@tu-berlin.de">Guillermo Gallego</maintainer>
+
+  <license>see LICENSE</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <buildtool_depend>catkin_simple</buildtool_depend>
+
+  <depend>roscpp</depend>
+  <depend>sensor_msgs</depend>
+  <depend>dvs_msgs</depend>
+  <depend>camera_info_manager</depend>
+  <depend>image_geometry</depend>
+  <depend>minkindr</depend>
+  <depend>cartesian3dgrid</depend>
+  <depend>rosbag</depend>
+  <depend>glog_catkin</depend>
+  <depend>gflags_catkin</depend>
+  <depend>pcl_ros</depend>
+  <depend>eigen_conversions</depend>
+  <depend>tf</depend>
+  <depend>tf_conversions</depend>
+  <depend>vicon</depend>
+
+  <export>
+
+  </export>
+</package>
