@@ -4,7 +4,7 @@
 
 This is the code for the journal paper [**Multi-Event-Camera Depth Estimation and Outlier Rejection by Refocused Events Fusion**](https://doi.org/10.1002/aisy.202200221), by [Suman Ghosh](https://www.linkedin.com/in/suman-ghosh-a8762576/) and [Guillermo Gallego](https://sites.google.com/view/guillermogallego), published at Advanced Intelligent Systems.
 
-The [PDF of the paper is available](https://arxiv.org/abs/2207.10494). If you use this work in your research, please cite it as follows:
+The [PDF of the paper is available](https://arxiv.org/pdf/2207.10494). If you use this work in your research, please cite it as follows:
 
 ```bibtex
 @article{Ghosh22aisy,
