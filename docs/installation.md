@@ -32,9 +32,9 @@ The above dependencies are specified in the [dependencies.yaml](dependencies.yam
 
 	cd catkin_ws/src
 	sudo apt-get install python3-vcstool
-	vcs-import < dvs_emvs_stereo/dependencies.yaml
+	vcs-import < dvs_mcemvs/dependencies.yaml
 
-The previous command should clone the repositories into folders *catkin_simple*, *rpg_dvs_ros*, etc. inside the src/ folder of your catkin workspace, at the same level as this repository *dvs_emvs_stereo*. They should NOT be inside the *dvs_emvs_stereo* folder.
+The previous command should clone the repositories into folders *catkin_simple*, *rpg_dvs_ros*, etc. inside the src/ folder of your catkin workspace, at the same level as this repository *dvs_mcemvs*. They should NOT be inside the *dvs_mcemvs* folder.
 
 Additional ROS tools needed (specified in the [package.xml](package.xml) file):
 
