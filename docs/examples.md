@@ -48,7 +48,7 @@ Extract the contents of `mocap-desk2-vi_gt_data.tar.gz` into a folder `mocap-des
 	
 	python mapper_emvs_stereo/scripts/mocap_txt2bag.py --path_prefix mocap-desk2-vi_gt_data
 
-This should generate `pose.bag`as output inside the `mocap-desk2-vi_gt_data` folder.
+This should generate `pose.bag` as output inside the `mocap-desk2-vi_gt_data` folder.
 
 Set the correct path of the input events, poses and the calibration file by editing the configuration file `mapper_emvs_stereo/cfg/tumvie/desk2_full/tum-vie.conf`.
 
