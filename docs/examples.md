@@ -1,6 +1,6 @@
 ## Running Examples
 
-### RPG_ECCV18
+### RPG_ECCV18_edited
 
 Download the [rpg_monitor_edited.bag](https://drive.google.com/file/d/1P8N3YfYnF5lgOgZGqkMU73otEnedztgy/view?usp=drive_web) file from the [ESVO 2020](https://sites.google.com/view/esvo-project-page/home#h.tl1va3u667ae), which contains stereo events and camera poses.
 	
