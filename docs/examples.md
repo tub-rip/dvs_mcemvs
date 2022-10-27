@@ -58,7 +58,7 @@ Finally, run mapper_emvs_stereo:
 	cd cfg/rpg_eccv18/tumvie/desk2_full
 	rosrun mapper_emvs_stereo run_emvs --flagfile=tum-vie.conf
 	
-This will process the whole desk2 sequence and generate a sequence of time-stamped output files (depthmaps and confidence maps) in the current folder.
+This will process the whole desk2 sequence and generate a sequence of time-stamped output files (depth maps and confidence maps) in the current folder.
 
 <table border="0" style="width:100%; border:none; border-collapse: collapse;">
   <tr style="border:none;">
