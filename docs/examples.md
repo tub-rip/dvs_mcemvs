@@ -44,7 +44,7 @@ Clone and install [our h52bag converter](https://github.com/tub-rip/events_h52ba
 	
 This should generate 2 bag files for the events, namely `mocap-desk2-events_left_0.bag` and `mocap-desk2-events_right_0.bag`. This was tested with 32GB RAM. If you run out of memory, use a lower number for `events_per_bag` instead `700000000`. This will split the output into multiple ROSBag files.
 
-Extract the contents of `mocap-desk2-vi_gt_data.tar.gz` into a folder `mocap-desk2-vi_gt_data`. Then, convert poses from `mocap_data.txt` to ROSBag using [this script](mapper_emvs_stereo/scripts/mocap_txt2bag.py):
+Extract the contents of `mocap-desk2-vi_gt_data.tar.gz` into a folder `mocap-desk2-vi_gt_data`. Then, convert poses from `mocap_data.txt` to ROSBag using [this script](../mapper_emvs_stereo/scripts/mocap_txt2bag.py):
 	
 	python mapper_emvs_stereo/scripts/mocap_txt2bag.py --path_prefix mocap-desk2-vi_gt_data
 
