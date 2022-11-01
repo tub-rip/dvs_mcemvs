@@ -64,7 +64,6 @@ void process_1(
     Eigen::Matrix4d baseline = Eigen::Matrix4d::Identity(4,4);
     baseline(0, 3) = opts_depth_map.rv_pos;
     geometry_utils::Transformation baselineTransform(baseline);
-    LOG(INFO) << baselineTransform;
     T_w_rv = T_w_l * baselineTransform;
     T_rv_w = T_w_rv.inverse();
 
