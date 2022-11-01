@@ -141,7 +141,7 @@ int main(int argc, char** argv)
         cam2 = cam1;
 
     std::vector<dvs_msgs::Event> events0, events1, events2;
-    std::map<ros::Time, geometry_utils::Transformation> poses, poses_dummy;
+    std::map<ros::Time, geometry_utils::Transformation> poses;
     if (FLAGS_bag_filename!=""){
         FLAGS_bag_filename_left = FLAGS_bag_filename;
         FLAGS_bag_filename_right = FLAGS_bag_filename;
@@ -296,6 +296,9 @@ int main(int argc, char** argv)
         }
     }
     else {
+
+        LOG(INFO)<<"Loading poses ...";
+        data_loading::parse_rosbag_gt(FLAGS_bag_filename_pose, poses, FLAGS_pose_topic, FLAGS_start_time_s, FLAGS_stop_time_s);
         LOG(INFO)<<"Loading left events ...";
         data_loading::parse_rosbag(FLAGS_bag_filename_left, events0, camera_info_msg0,
                                    FLAGS_event_topic0, FLAGS_camera_info_topic0, FLAGS_start_time_s, FLAGS_stop_time_s, FLAGS_offset0);
@@ -303,10 +306,8 @@ int main(int argc, char** argv)
         data_loading::parse_rosbag(FLAGS_bag_filename_right, events1, camera_info_msg1,
                                    FLAGS_event_topic1, FLAGS_camera_info_topic1, FLAGS_start_time_s, FLAGS_stop_time_s, FLAGS_offset1);
         if(FLAGS_event_topic2 != "")
-            data_loading::parse_rosbag(FLAGS_bag_filename, events2, poses_dummy, camera_info_msg2,
-                                       FLAGS_event_topic2, FLAGS_camera_info_topic2, FLAGS_pose_topic, FLAGS_start_time_s, FLAGS_stop_time_s, FLAGS_offset2);
-        LOG(INFO)<<"Loading poses ...";
-        data_loading::parse_rosbag_gt(FLAGS_bag_filename_pose, poses, FLAGS_pose_topic, FLAGS_start_time_s, FLAGS_stop_time_s);
+            data_loading::parse_rosbag(FLAGS_bag_filename, events2, camera_info_msg2,
+                                       FLAGS_event_topic2, FLAGS_camera_info_topic2, FLAGS_start_time_s, FLAGS_stop_time_s, FLAGS_offset2);
 
         // Use linear interpolation to compute the camera pose for each event
         LinearTrajectory trajectory0 = LinearTrajectory(poses);
@@ -338,7 +339,7 @@ int main(int argc, char** argv)
             if (FLAGS_event_topic2 != ""){
                 cv::Mat event_image2 = cv::Mat(full_resolution,CV_8UC1);
                 accumulateEvents(events2,true,event_image2);
-                cv::imwrite(FLAGS_out_path + "events_3.png",event_image2);
+                cv::imwrite(FLAGS_out_path + "events_2.png",event_image2);
             }
         }
 
@@ -362,10 +363,7 @@ int main(int argc, char** argv)
         case 1:
         {
             // 1-3. Compute two DSIs (one for each camera) and fuse them
-            if (events2.size()>0)
-                process_1(cam0,cam1,cam2, trajectory0,trajectory1,trajectory2, events0,events1,events2, opts_depth_map,dsi_shape, mapper_fused, mapper0, mapper1, mapper2, FLAGS_out_path, FLAGS_ts, FLAGS_stereo_fusion);
-            else
-                process_1(cam0,cam1,cam1, trajectory0,trajectory1,trajectory2, events0,events1,events2, opts_depth_map,dsi_shape, mapper_fused, mapper0, mapper1, mapper2, FLAGS_out_path, FLAGS_ts, FLAGS_stereo_fusion);
+            process_1(cam0,cam1,cam2, trajectory0,trajectory1,trajectory2, events0,events1,events2, opts_depth_map,dsi_shape, mapper_fused, mapper0, mapper1, mapper2, FLAGS_out_path, FLAGS_ts, FLAGS_stereo_fusion);
             break;
         }
         case 2:

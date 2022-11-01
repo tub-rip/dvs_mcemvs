@@ -36,11 +36,11 @@ namespace EMVS {
     height_ = full_resolution.height;
 
 
-    //    LOG(INFO) << "dvs_cam_.K" << dvs_cam_.intrinsicMatrix();
-    //    LOG(INFO) << "dvs_cam_.D" << dvs_cam_.distortionCoeffs();
-    //    LOG(INFO) << "dvs_cam_.P" << dvs_cam_.fullProjectionMatrix();
-    //    LOG(INFO) << "dvs_cam_.R" << dvs_cam_.rotationMatrix();
-    //    LOG(INFO) << "dvs_cam_.fullResolution()" << dvs_cam_.fullResolution();
+//        LOG(INFO) << "dvs_cam_.K" << dvs_cam_.intrinsicMatrix();
+//        LOG(INFO) << "dvs_cam_.D" << dvs_cam_.distortionCoeffs();
+//        LOG(INFO) << "dvs_cam_.P" << dvs_cam_.fullProjectionMatrix();
+//        LOG(INFO) << "dvs_cam_.R" << dvs_cam_.rotationMatrix();
+//        LOG(INFO) << "dvs_cam_.fullResolution()" << dvs_cam_.fullResolution();
 
     // Set instrinsics of mapper using projection matrix of PinholeCameraModel cam
     K_ << dvs_cam_.fx(), 0.f, dvs_cam_.cx(),
