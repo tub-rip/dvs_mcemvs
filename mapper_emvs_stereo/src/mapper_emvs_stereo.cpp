@@ -288,6 +288,11 @@ void MapperEMVS::precomputeRectifiedPoints()
                 // fisheye distortion
                 rectified_point = fisheye_rectifyPoint(cv::Point2d(x,y), K_, D_, R_, P_);
             }
+            else
+            {
+                LOG(ERROR) << "Distortion model not set properly!";
+                return;
+            }
             precomputed_rectified_points_.col(y * width_ + x) = Eigen::Vector2f(rectified_point.x, rectified_point.y);
         }
     }
