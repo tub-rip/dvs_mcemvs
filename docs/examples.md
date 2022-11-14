@@ -78,7 +78,7 @@ From the [DSEC dataset](https://dsec.ifi.uzh.ch/dsec-datasets/download/), downlo
 * [interlaken_00_b_events_right.zip](https://download.ifi.uzh.ch/rpg/DSEC/test/interlaken_00_b/interlaken_00_b_events_right.zip) 
 * [interlaken_00_b_calibration.zip](https://download.ifi.uzh.ch/rpg/DSEC/test/interlaken_00_b/interlaken_00_b_calibration.zip) for camera and hand-eye calibration.
 
-Camera poses obtained using LiDAR-IMU odometry are available [here](data/DSEC/interlaken_00-odometry/pose.bag). Thanks to @magehrig for the data.
+Camera poses obtained using LiDAR-IMU odometry are available [here](data/DSEC/interlaken_00-odometry/pose.bag). Thanks to [Mathias Gehrig](https://magehrig.github.io/) for the data.
 
 Extract the zip files. Convert left and right events from h5 format to ROSBag. 
 Clone and install [our h52bag converter](https://github.com/tub-rip/events_h52bag). Then, convert using:
