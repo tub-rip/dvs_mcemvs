@@ -273,7 +273,7 @@ void get_camera_calib_dsec_zurich04a(image_geometry::PinholeCameraModel& cam0,
     camera_info.R = {1, 0, 0, 0, 1, 0, 0, 0, 1};
 
     cv::Mat K(3, 3, CV_64F, camera_info.K.data());
-    cv::Mat P = cv::getOptimalNewCameraMatrix(K, camera_info.D, cv::Size(camera_info.height, camera_info.width), 0);
+    cv::Mat P = cv::getOptimalNewCameraMatrix(K, camera_info.D, cv::Size(camera_info.width, camera_info.height), 0);
     for (int r=0; r<3; r++){
         for (int c=0; c<4; c++){
             camera_info.P[r*4+c]=P.at<double>(r, c);
@@ -339,7 +339,7 @@ void get_camera_calib_dsec_interlaken00b(image_geometry::PinholeCameraModel& cam
     camera_info.R = {1, 0, 0, 0, 1, 0, 0, 0, 1};
 
     cv::Mat K(3, 3, CV_64F, camera_info.K.data());
-    cv::Mat P = cv::getOptimalNewCameraMatrix(K, camera_info.D, cv::Size(camera_info.height, camera_info.width), 0);
+    cv::Mat P = cv::getOptimalNewCameraMatrix(K, camera_info.D, cv::Size(camera_info.width, camera_info.height), 0);
     for (int r=0; r<3; r++){
         for (int c=0; c<4; c++){
             camera_info.P[r*4+c]=P.at<double>(r, c);
@@ -497,7 +497,7 @@ void get_camera_calib_evimo2(image_geometry::PinholeCameraModel& cam0,
     camera_info.D = {0.108306, -0.154485, 0.00103538, -0.000401824};
 
     cv::Mat K(3, 3, CV_64F, camera_info.K.data());
-    cv::Mat P = cv::getOptimalNewCameraMatrix(K, camera_info.D, cv::Size(camera_info.height, camera_info.width), 0);
+    cv::Mat P = cv::getOptimalNewCameraMatrix(K, camera_info.D, cv::Size(camera_info.width, camera_info.height), 0);
     for (int r = 0; r<3; r++){
         for (int c=0; c<4; c++){
             camera_info.P[r*4+c]=P.at<double>(r, c);
@@ -667,7 +667,7 @@ void get_camera_calib_yaml_mvsec(image_geometry::PinholeCameraModel& cam0,
         }
         else {
             cv::Mat K_temp(3, 3, CV_64F, camera_info[i].K.data());
-            cv::Mat P_temp = cv::getOptimalNewCameraMatrix(K_temp, camera_info[i].D, cv::Size(camera_info[i].width, camera_info[i].height), -1);
+            cv::Mat P_temp = cv::getOptimalNewCameraMatrix(K_temp, camera_info[i].D, cv::Size(camera_info[i].width, camera_info[i].height), 0);
 
             for (int r = 0; r<3; r++){
                 for (int c=0; c<4; c++){
