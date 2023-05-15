@@ -27,6 +27,97 @@
 
 // Calibration functions
 
+
+//Load calib params from yaml when cam extrinsics are provided wrt base B (hand)
+void get_camera_calib_yaml_m3ed(image_geometry::PinholeCameraModel& cam0,
+                                 image_geometry::PinholeCameraModel& cam1,
+                                 Eigen::Matrix4d& mat4_1_0,
+                                 Eigen::Matrix4d& mat4_hand_eye,
+                                 std::string calib_path)
+{
+    std::vector<sensor_msgs::CameraInfo> camera_info(2);
+
+    YAML::Node calibInfo = YAML::LoadFile(calib_path);
+
+    //Intrinsics
+    for (int i=0; i<=1; i++){
+        YAML::Node camera = calibInfo["cam"+std::to_string(i)];
+        std::vector<int> res = camera["resolution"].as<std::vector<int>>();
+        camera_info[i].height = res[1];
+        camera_info[i].width = res[0];
+        std::vector<double> intrinsics = camera["intrinsics"].as<std::vector<double>>();
+        camera_info[i].K = {intrinsics[0], 0., intrinsics[2],
+                            0., intrinsics[1], intrinsics[3],
+                            0., 0., 1.};
+
+        std::string distortionType = camera["distortion_model"].as<std::string>();
+        if (distortionType == "none"){
+            camera_info[i].distortion_model = "plumb_bob";
+            camera_info[i].D = {0., 0., 0., 0., 0.}; // plumb_bob (rad-tan)
+        }
+        else if(distortionType == "equidistant"){
+            camera_info[i].distortion_model="fisheye";
+            camera_info[i].D = camera["distortion_coeffs"].as<std::vector<double>>();
+        }
+        else if(distortionType == "radtan"){
+            camera_info[i].distortion_model="plumb_bob";
+            camera_info[i].D = camera["distortion_coeffs"].as<std::vector<double>>();
+        }
+        // Load rectification matrix form YAML
+        //                const YAML::Node R = camera["rectification_matrix"];
+        //                for (int r = 0; r<3; r++){
+        //                    std::vector<double> tmp = R[r].as<std::vector<double>>();
+        //                    for (int c=0; c<3; c++){
+        //                        camera_info[i].R[r*3+c]=tmp[c];
+        //                    }
+        //                }
+
+        //Ignore rectification rotation, work on unrectified images
+        camera_info[i].R = {1, 0, 0,
+                            0, 1, 0,
+                            0, 0, 1};
+
+        // Load projection matrix form YAML
+        if (const YAML::Node P = camera["projection_matrix"]){
+            for (int r = 0; r<3; r++){
+                std::vector<double> tmp = P[r].as<std::vector<double>>();
+                for (int c=0; c<4; c++){
+                    camera_info[i].P[r*4+c]=tmp[c];
+                }
+            }
+        }
+        else {
+            cv::Mat K_temp(3, 3, CV_64F, camera_info[i].K.data());
+            cv::Mat P_temp = cv::getOptimalNewCameraMatrix(K_temp, camera_info[i].D, cv::Size(camera_info[i].width, camera_info[i].height), 0);
+
+            for (int r = 0; r<3; r++){
+                for (int c=0; c<4; c++){
+                    camera_info[i].P[r*4+c]=P_temp.at<double>(r, c);
+                }
+            }
+        }
+
+        // Set projection matrix using raw intrinsics
+        //                camera_info[i].P = {intrinsics[0], 0., intrinsics[2], 0.,
+        //                                    0., intrinsics[1], intrinsics[3], 0.,
+        //                                    0., 0., 1., 0.};
+    }
+
+    cam0.fromCameraInfo(camera_info[0]);
+    camera_info[1].P = camera_info[0].P;
+    cam1.fromCameraInfo(camera_info[1]);
+
+    // Extrinsics
+    const YAML::Node ext = calibInfo["cam1"]["T_cn_cnm1"];
+    for (int r=0; r<4; r++){
+        std::vector<double> tmp = ext[r].as<std::vector<double>>();
+        mat4_1_0.row(r) = Eigen::Map<Eigen::Matrix<double, 4, 1>>(tmp.data());
+    }
+    mat4_hand_eye = Eigen::Matrix4d::Identity(4,4);
+    LOG(INFO)<<"extrinsic: "<<mat4_1_0;
+    LOG(INFO)<<"hand eye: "<<mat4_hand_eye;
+}
+
 //Load calib params from yaml when cam extrinsics are provided wrt base B (hand)
 void get_camera_calib_yaml(image_geometry::PinholeCameraModel& cam0,
                            image_geometry::PinholeCameraModel& cam1,

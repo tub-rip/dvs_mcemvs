@@ -135,7 +135,8 @@ int main(int argc, char** argv)
         get_camera_calib_json(cam0, cam1, mat4_1_0, mat4_hand_eye, FLAGS_calib_path, FLAGS_mocap_calib_path);
     else if(FLAGS_calib_type == "dsec_yaml")
         get_camera_calib_dsec_yaml(cam0, cam1, mat4_1_0, mat4_hand_eye, FLAGS_calib_path, FLAGS_mocap_calib_path);
-
+    else if(FLAGS_calib_type == "yaml_m3ed")
+        get_camera_calib_yaml_m3ed(cam0, cam1, mat4_1_0, mat4_hand_eye, FLAGS_calib_path);
 
     if (FLAGS_event_topic2 == "")
         cam2 = cam1;

@@ -24,6 +24,13 @@
 
 void loadCalibInfo(const std::string &cameraSystemDir, bool bPrintCalibInfo);
 
+
+void get_camera_calib_yaml_m3ed(image_geometry::PinholeCameraModel& cam0,
+                                 image_geometry::PinholeCameraModel& cam1,
+                                 Eigen::Matrix4d& mat4_1_0,
+                                 Eigen::Matrix4d& mat4_hand_eye,
+                                 std::string calib_path);
+
 void get_camera_calib_dsec_yaml(image_geometry::PinholeCameraModel& cam0,
                                 image_geometry::PinholeCameraModel& cam1,
                                 Eigen::Matrix4d& mat4_1_0,
