@@ -1,0 +1,3 @@
+### Evaluation scripts
+* **Visualization of the Disparity Space Images (DSIs)** can be done using the python scripts provided [here](https://github.com/tub-rip/dvs_mcemvs/blob/main/mapper_emvs_stereo/scripts). Please refer to the [the monocular package](https://github.com/uzh-rpg/rpg_emvs/blob/master/README.md#disparity-space-image-dsi) for documentation about using them.
+* We provide [an example script](https://github.com/tub-rip/dvs_mcemvs/blob/main/mapper_emvs_stereo/scripts/evaluate_mcemvs_dsec.py) for **computing the depth error metrics** for DSEC. Please modify the data paths before running.
