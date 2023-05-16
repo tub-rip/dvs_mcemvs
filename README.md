@@ -37,6 +37,7 @@ The [PDF of the paper is available](https://arxiv.org/pdf/2207.10494). If you us
 * [Running the code with various configurations](docs/running.md)
 * [Datasets used](docs/datasets.md)
 * [Running Examples](docs/examples.md)
+* [Evaluation scripts](docs/evaluation.md)
 
 
 ## License
