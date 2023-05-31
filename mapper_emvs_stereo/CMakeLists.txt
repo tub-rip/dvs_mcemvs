@@ -38,7 +38,7 @@ set(SOURCES
   src/process5.cpp
 )
 
-option(DEFINE_USE_INVERSE_DEPTH "Use linear spacing in inverse depth (if OFF, will use linear spacing in depth)" ON)
+option(DEFINE_USE_INVERSE_DEPTH "Use linear spacing in inverse depth (if OFF, will use linear spacing in depth)" OFF)
 if(DEFINE_USE_INVERSE_DEPTH)
     add_definitions(-DUSE_INVERSE_DEPTH)
 endif(DEFINE_USE_INVERSE_DEPTH)

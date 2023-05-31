@@ -104,3 +104,10 @@ void get_camera_calib_DVS_Gen3(image_geometry::PinholeCameraModel& cam0,
                                image_geometry::PinholeCameraModel& cam1,
                                Eigen::Matrix4d& mat4_1_0,
                                Eigen::Matrix4d& mat4_hand_eye);
+
+void get_camera_calib_sony(image_geometry::PinholeCameraModel& cam0,
+                                image_geometry::PinholeCameraModel& cam1,
+                                Eigen::Matrix4d& mat4_1_0,
+                                Eigen::Matrix4d& mat4_hand_eye,
+                                std::string calib_path,
+                                std::string mocap_calib_path);
