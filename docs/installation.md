@@ -18,7 +18,7 @@ The code has been tested on ROS Noetic. Depending on the ROS distribution you in
 **Clone** this repository into the `src` folder of your catkin workspace.
 
 	cd catkin_ws/src
-	git clone --branch releaseAISY git@github.com:tub-rip/dvs_mcemvs.git
+	git clone git@github.com:tub-rip/dvs_mcemvs.git
 
 The catkin package dependencies are:
 - [catkin simple](https://github.com/catkin/catkin_simple)
