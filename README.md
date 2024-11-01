@@ -1,11 +1,14 @@
-# Multi-Event-Camera Depth Estimation and Outlier Rejection by Refocused Events Fusion 
+# MC-EMVS: Multi-Camera Event-based Multi-View Stereo 
+This is the code for the journal paper [**Multi-Event-Camera Depth Estimation and Outlier Rejection by Refocused Events Fusion**](https://doi.org/10.1002/aisy.202200221), also known as **MC-EMVS: Multi-Camera Event-based Multi-View Stereo**,
+by [Suman Ghosh](https://www.linkedin.com/in/suman-ghosh-a8762576/) and [Guillermo Gallego](https://sites.google.com/view/guillermogallego), published at Advanced Intelligent Systems.
+<h2 align="left">
+  
+[Paper](https://arxiv.org/pdf/2207.10494) | [Video](https://youtu.be/o7Bxg9XlHmg) | [Poster](/docs/2022_MCEVMS_poster.pdf)
+</h2>
 
 [![Multi-Event-Camera Depth Estimation and Outlier Rejection by Refocused Events Fusion](docs/mcemvs_thumbnail.jpg)](https://youtu.be/o7Bxg9XlHmg)
 
-This is the code for the journal paper [**Multi-Event-Camera Depth Estimation and Outlier Rejection by Refocused Events Fusion**](https://doi.org/10.1002/aisy.202200221), also known as **MC-EMVS: Multi-Camera Event-based Multi-View Stereo**,
-by [Suman Ghosh](https://www.linkedin.com/in/suman-ghosh-a8762576/) and [Guillermo Gallego](https://sites.google.com/view/guillermogallego), published at Advanced Intelligent Systems. 
-
-The [PDF of the paper is available](https://arxiv.org/pdf/2207.10494). If you use this work in your research, please cite it as follows:
+If you use this work in your research, please cite it as follows:
 
 ```bibtex
 @article{Ghosh22aisy,
