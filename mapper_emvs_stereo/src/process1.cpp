@@ -190,12 +190,14 @@ void process_1(
           }
       }
 
-    // Write the DSI (3D voxel grid) to disk
-    //    mapper0.dsi_.writeGridNpy((out_path+std::to_string(t_mid)+"dsi_0.npy").c_str());
-    //    mapper1.dsi_.writeGridNpy((out_path+std::to_string(t_mid)+"dsi_1.npy").c_str());
-    //    if (events2.size()>0)
-    //      mapper2.dsi_.writeGridNpy((out_path+std::to_string(t_mid)+"dsi_2.npy").c_str());
-    //    mapper_fused.dsi_.writeGridNpy((out_path+std::to_string(t_mid)+"dsi_fused.npy").c_str());
+    if(opts_depth_map.save_dsi) {
+//     Write the DSI (3D voxel grid) to disk
+        mapper0.dsi_.writeGridNpy((out_path+std::to_string(t_mid)+"dsi_0.npy").c_str());
+        mapper1.dsi_.writeGridNpy((out_path+std::to_string(t_mid)+"dsi_1.npy").c_str());
+        if (events2.size()>0)
+          mapper2.dsi_.writeGridNpy((out_path+std::to_string(t_mid)+"dsi_2.npy").c_str());
+        mapper_fused.dsi_.writeGridNpy((out_path+std::to_string(t_mid)+"dsi_fused.npy").c_str());
+      }
   }
 
   // 3. Extract semi-dense depth map from DSI

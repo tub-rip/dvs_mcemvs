@@ -74,6 +74,7 @@ DEFINE_int32(adaptive_threshold_kernel_size, 5, "Size of the Gaussian kernel use
 DEFINE_double(adaptive_threshold_c, 5., "A value in [0, 255]. The smaller the noisier and more dense reconstruction (default: 5.)");
 DEFINE_int32(median_filter_size, 5, "Size of the median filter used to clean the depth map. (default: 5)");
 DEFINE_bool(save_mono, false, "If set to true, results for monocular EMVS (left and right camera) will be saved as well");
+DEFINE_bool(save_dsi, false, "Saves DSI to disk if true");
 
 // Point cloud parameters (noise removal). Section 5.2.4 in the IJCV paper.
 DEFINE_double(radius_search, 0.05, "Size of the radius filter. (default: 0.05)");
@@ -167,6 +168,7 @@ int main(int argc, char** argv)
     opts_depth_map.save_conf_stats = FLAGS_save_conf_stats;
     opts_depth_map.save_mono = FLAGS_save_mono;
     opts_depth_map.rv_pos = FLAGS_rv_pos;
+    opts_depth_map.save_dsi = FLAGS_save_dsi;
 
     if (FLAGS_full_seq)
     {
