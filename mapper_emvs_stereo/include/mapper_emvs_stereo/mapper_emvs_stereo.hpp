@@ -74,6 +74,7 @@ struct OptionsDepthMap
   bool full_sequence;
   bool save_conf_stats;
   bool save_mono;
+  bool save_dsi;
   double rv_pos;
   // Kernel size of median filter
   int median_filter_size_;

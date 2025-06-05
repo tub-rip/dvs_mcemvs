@@ -251,15 +251,9 @@ void process_2(const image_geometry::PinholeCameraModel& cam0,
   LOG(INFO) << "Time taken to fuse across space and time "<< fusion_duration <<" ms";
   LOG(INFO) << "Mean square = " << mapper_fused.dsi_.computeMeanSquare();
 
-  if (!opts_depth_map.full_sequence) {
-      // Write the DSI (3D voxel grid) to disk
-      mapper_fused_left.dsi_.writeGridNpy(std::string(out_path + "dsi_fused_0_temporalfusion.npy").c_str());
-      mapper_fused_right.dsi_.writeGridNpy(std::string(out_path + "dsi_fused_1_temporalfusion.npy").c_str());
-      mapper_fused.dsi_.writeGridNpy(std::string(out_path + "dsi_stereo_temporalfusion.npy").c_str());
-    }
 
-  // Fused DSIs (using harmonic mean).
   if (!opts_depth_map.full_sequence) {
+      // Fused DSIs (using harmonic mean).
       mapper_fused_left.getDepthMapFromDSI(depth_map, confidence_map, semidense_mask, opts_depth_map);
       saveDepthMaps(depth_map, confidence_map, semidense_mask, dsi_shape.min_depth_, dsi_shape.max_depth_, std::string("left_temporal_" + std::to_string(temporal_fusion)), ss.str());
       mapper_fused_right.getDepthMapFromDSI(depth_map, confidence_map, semidense_mask, opts_depth_map);
@@ -294,9 +288,14 @@ void process_2(const image_geometry::PinholeCameraModel& cam0,
       return;
     }
 
-  if (!opts_depth_map.full_sequence) {
+  if(opts_depth_map.save_dsi) {
+      // Write the DSI (3D voxel grid) to disk
+      mapper_fused_left.dsi_.writeGridNpy(std::string(out_path + "dsi_fused_0_temporalfusion.npy").c_str());
+      mapper_fused_right.dsi_.writeGridNpy(std::string(out_path + "dsi_fused_1_temporalfusion.npy").c_str());
+      mapper_fused.dsi_.writeGridNpy(std::string(out_path + "dsi_stereo_temporalfusion.npy").c_str());
       mapper_fused_camera_time.dsi_.writeGridNpy(std::string(out_path + "dsi_stereo_temporalfusion_camera_time.npy").c_str());
     }
+
   mapper_fused_camera_time.getDepthMapFromDSI(depth_map, confidence_map, semidense_mask, opts_depth_map);
   saveDepthMaps(depth_map, confidence_map, semidense_mask, dsi_shape.min_depth_, dsi_shape.max_depth_, std::string("stereo_temporal_camera_time" + std::to_string(temporal_fusion)), ss.str());
 
